@@ -45,25 +45,28 @@
                 <th scope="col">Minutes Away</th>
               </tr>
             </thead>
+            <tbody class="rows">
+
+            </tbody>
         </table>
 
         <form>
             <h2>Add Train</h2>
             <div class="form-group">
-              <label for="exampleInputName">Train Name</label>
-              <input type="name" class="form-control" id="exampleInputName">
+              <label for="inputName">Train Name</label>
+              <input type="name" class="form-control" id="inputName">
             </div>
             <div class="form-group">
-              <label for="exampleInputDestination">Destination</label>
-              <input type="role" class="form-control" id="exampleInputDestination">
+              <label for="inputDestination">Destination</label>
+              <input type="role" class="form-control" id="inputDestination">
             </div>
             <div class="form-group">
-                <label for="exampleInputTime">First Train Time (HH:mm-military time)</label>
-                <input type="startDate" class="form-control" id="exampleInputTime">
+                <label for="inputTime">First Train Time (HH:mm-military time)</label>
+                <input type="startDate" class="form-control" id="inputTime">
             </div>
             <div class="form-group">
-                <label for="exampleInputFrequency">Frequency (min)</label>
-                <input type="monthlyRate" class="form-control" id="exampleInputFrequency">
+                <label for="inputFrequency">Frequency (min)</label>
+                <input type="monthlyRate" class="form-control" id="inputFrequency">
             </div>
             
             <div class="container" id="submitButton">
@@ -73,51 +76,77 @@
             </div>
         </form>
         
-        
-        
+        <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>   
     <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
     <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyD-TbqTGshDKjr9PHc98N4gu5p3fIPOBGU",
-            authDomain: "trainstation-2a48d.firebaseapp.com",
-            databaseURL: "https://trainstation-2a48d.firebaseio.com",
-            projectId: "trainstation-2a48d",
-            storageBucket: "",
-            messagingSenderId: "963435137788"
+        $(document).ready(function(){
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyD-TbqTGshDKjr9PHc98N4gu5p3fIPOBGU",
+                authDomain: "trainstation-2a48d.firebaseapp.com",
+                databaseURL: "https://trainstation-2a48d.firebaseio.com",
+                projectId: "trainstation-2a48d",
+                storageBucket: "",
+                messagingSenderId: "963435137788"
 
-        };
-        firebase.initializeApp(config);
+            };
+            firebase.initializeApp(config);
 
-        var database = firebase.database();
-
-        $("#submitButton").on("click", "#submitBTN",  function(event) {
+            var database = firebase.database();
+            
+            //adding a new train when submit button is clicked
+            $("#submitBTN").on("click",  function(event) {
+                //keeps form from updating itself
                 event.preventDefault();
-                
+                //grabbiin inputs
                 var rows = "";
-                var name = $("#exampleInputName").val().trim();
-                var place = $("#exampleInputDestination").val().trim();
-                var time = $("#exampleInputTime").val().trim();
-                var rate = $("#exampleInputFrequency").val().trim();
-                
-                console.log(name);
-                console.log(place);
-                console.log(time);
-                console.log(rate);
-                
-                rows += "<tr><td>" + name + "</td><td>" + place + "</td><td>" + time + "</td><td>" + rate + "</td></tr>";
-                $(rows).appendTo(".table");
+                var trainName = $("#inputName").val().trim();
+                var trainPlace = $("#inputDestination").val().trim();
+                var trainTime = moment($("#inputTime").val().trim(), "HH:mm").format("X");
+                var trainRate = $("#inputFrequency").val().trim();
+                //putting individual inputs in a variable specific to the new train
+                var newtrain = {
+                    name: trainName,
+                    place: trainPlace,
+                    time: trainTime,
+                    rate: trainRate,
+                };
+                //uploading train to the database
+                database.ref().push(newTrain);
 
-                database.ref().push({
-                    name: name,
-                    role: role,
-                    start: start,
-                    rate: rate
-                });
-        });
-        function addInfo(){
+                console.log(newTrain.name);
+                console.log(newTrain.place);
+                console.log(newTrain.time);
+                console.log(newTrain.rate);
+                //clearing input boxes
+                $("#inputName").val("");
+                $("#inputDestination").val("");
+                $("#inputTime").val("");
+                $("#inputFrequency").val("");
+            });    
+            //creating firebase event for adding trains to the database   
+            database.ref().on("child_added", function(childSnapshot, prevChild){
+                
+                console.log(childSnapshot.val());
+                //storing inouts into a variable
+                var trainName = childSnapshot.val().name;
+                var trainPlace = childSnapshot.val().place;
+                var trainTime = childSnapshot.val().time;
+                var trainRate = childSnapshot.val().rate;
 
-        };
+                console.log(trainName);
+                console.log(trainPlace);
+                console.log(trainTime);
+                console.log(trainRate);
+
+                //adding the inputs into a new row
+                //appending them
+                $(".rows").append("<tr><td>" + trainName + "</td><td>" + trainPlace + "</td><td>" + trainTime + "</td><td>" + trainRate + "</td></tr>");
+
+
+            });
+        });    
     </script>
     </body>
 </html>
