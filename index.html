@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8" />
+        <title>Train Schedule</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+        <style>
+           .jumbotron {
+               height: 10px;
+               text-align: center;
+           } 
+           .display-4 {
+               margin-top: -70px;
+           }
+           form {
+               border: 1px solid black;
+               width: 600px;
+               margin-left: 20px;
+               padding: 10px;
+           }
+           #current {
+               margin-top: -30px;
+           }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-4">Train Station Schedule</h1>
+                <p class="lead">Come on ride the train! It's a choo-choo train!</p>
+            </div>
+        </div>
+
+        <h2 id="current">Current Train Schedule</h2>
+
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Train Name</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Frequency (min)</th>
+                <th scope="col">Next Arrival</th>
+                <th scope="col">Minutes Away</th>
+              </tr>
+            </thead>
+        </table>
+
+        <form>
+            <h2>Add Train</h2>
+            <div class="form-group">
+              <label for="exampleInputName">Train Name</label>
+              <input type="name" class="form-control" id="exampleInputName">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputDestination">Destination</label>
+              <input type="role" class="form-control" id="exampleInputDestination">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputTime">First Train Time (HH:mm-military time)</label>
+                <input type="startDate" class="form-control" id="exampleInputTime">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFrequency">Frequency (min)</label>
+                <input type="monthlyRate" class="form-control" id="exampleInputFrequency">
+            </div>
+            
+            <div class="container" id="submitButton">
+                <div class="buttons">
+                    <button class="btn-primary" id="submitBTN">Submit</button>
+                </div>
+            </div>
+        </form>
+        
+        
+        
+    <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyD-TbqTGshDKjr9PHc98N4gu5p3fIPOBGU",
+            authDomain: "trainstation-2a48d.firebaseapp.com",
+            databaseURL: "https://trainstation-2a48d.firebaseio.com",
+            projectId: "trainstation-2a48d",
+            storageBucket: "",
+            messagingSenderId: "963435137788"
+
+        };
+        firebase.initializeApp(config);
+
+        var database = firebase.database();
+
+        $("#submitButton").on("click", "#submitBTN",  function(event) {
+                event.preventDefault();
+                
+                var rows = "";
+                var name = $("#exampleInputName").val().trim();
+                var place = $("#exampleInputDestination").val().trim();
+                var time = $("#exampleInputTime").val().trim();
+                var rate = $("#exampleInputFrequency").val().trim();
+                
+                console.log(name);
+                console.log(place);
+                console.log(time);
+                console.log(rate);
+                
+                rows += "<tr><td>" + name + "</td><td>" + place + "</td><td>" + time + "</td><td>" + rate + "</td></tr>";
+                $(rows).appendTo(".table");
+
+                database.ref().push({
+                    name: name,
+                    role: role,
+                    start: start,
+                    rate: rate
+                });
+        });
+        function addInfo(){
+
+        };
+    </script>
+    </body>
+</html>
